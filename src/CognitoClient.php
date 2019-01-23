@@ -193,7 +193,7 @@ class CognitoClient
      * @param array $attributes
      * @return bool
      */
-    public function inviteUser($username, array $attributes = [])
+    public function inviteUser($username, $password, array $attributes = [])
     {
         $attributes['email'] = $username;
         $attributes['email_verified'] = 'true';
@@ -201,12 +201,13 @@ class CognitoClient
         try {
             $this->client->AdminCreateUser([
                 'UserPoolId'             => $this->poolId,
-                'TemporaryPassword'      => Str::random(40),
+                'TemporaryPassword'      => $password,
                 'DesiredDeliveryMediums' => [
                     'EMAIL',
                 ],
                 'Username'       => $username,
                 'UserAttributes' => $this->formatAttributes($attributes),
+                'MessageAction' => 'SUPPRESS'
             ]);
         } catch (CognitoIdentityProviderException $e) {
             if ($e->getAwsErrorCode() === self::USERNAME_EXISTS) {
