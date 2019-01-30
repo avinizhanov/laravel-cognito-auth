@@ -57,6 +57,14 @@ class CognitoClient
         $this->poolId = $poolId;
     }
 
+    public function changePassword($access_token, $current_password, $new_password){
+        $response = $this->client->changePassword([
+            'AccessToken' => $access_token,
+            'PreviousPassword' => $current_password,
+            'ProposedPassword' => $new_password
+        ]);
+    }
+
     /**
      * Checks if credentials of a user are valid.
      *
